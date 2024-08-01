@@ -1,0 +1,58 @@
+<!--index.html-->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Electron App</title>
+    <style>
+        #controls {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 50px;
+            background-color: #f0f0f0;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        #browser-container {
+            position: absolute;
+            top: 60px;
+            left: 0;
+            width: 100%;
+            height: calc(100% - 60px);
+            overflow: hidden;
+        }
+        button {
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div id="controls">
+        <button onclick="goBack()">Back</button>
+        <button onclick="goForward()">Forward</button>
+        <button onclick="reloadPage()">Reload</button>
+        <input type="text" id="urlInput" placeholder="Enter URL" style="width: 60%;" />
+        <button onclick="loadURL()">Search</button>
+    </div>
+    <div id="browser-container">
+        <!-- This is where the BrowserView will be embedded -->
+    </div>
+    <script>
+        const { ipcRenderer } = require('electron');
+        function loadURL() {
+            const url = document.getElementById('urlInput').value;
+            ipcRenderer.send('load-url', url);
+        }
+        function goBack() {
+            ipcRenderer.send('go-back');
+        }
+        function goForward() {
+            ipcRenderer.send('go-forward');
+        }
+        function reloadPage() {
+            ipcRenderer.send('reload-page');
+        }
+    </script>
+</body>
+</html>

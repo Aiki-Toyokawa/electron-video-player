@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Video Player</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #f4f4f4;
+            overflow: hidden;
+        }
+
+        #content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            height: 100vh;
+        }
+
+        #video-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
+        #video-player {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 16 / 9;
+            background-color: rgb(41, 66, 80);
+            border-radius: 12px;
+            object-fit: fixed;
+        }
+
+        #video-info {
+            margin-top: 10px;
+            width: 100%;
+            max-width: 800px;
+            display: none; /* デフォルトで非表示 */
+        }
+
+        #video-info p {
+            margin: 5px 0;
+        }
+
+        #video-list-container {
+            width: 100%;
+            max-width: 800px;
+            overflow-y: auto;
+            background-color: #7676766f;
+            border-radius: 12px;
+        }
+
+        #video-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .video-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .video-item img {
+            width: 120px;
+            height: auto;
+            margin-right: 10px;
+            border-radius: 8px;
+        }
+
+        .video-details {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            flex: 1;
+        }
+
+        .video-title {
+            font-size: 16px;
+            color: #000;
+            margin: 0;
+        }
+
+        .video-author {
+            font-size: 14px;
+            color: #606060;
+        }
+
+        .video-duration {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            padding: 2px 4px;
+            font-size: 12px;
+            color: #fff;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 3px;
+        }
+
+        @media (min-width: 801px) {
+            #content {
+                flex-direction: row;
+                align-items: flex-start;
+                justify-content: space-between;
+            }
+
+            #video-container {
+                max-width: 50%;
+                flex-grow: 1;
+                height: auto;
+                margin-right: 20px; /* 動画とリストの間のスペース */
+            }
+
+            #video-list-container {
+                max-width: 50%;
+                max-height: calc(100vh - 40px);
+                overflow-y: auto;
+            }
+
+            #video-info {
+                display: block;
+                margin-top: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="content">
+        <div id="video-container">
+            <video id="video-player" controls></video>
+            <div id="video-info">
+                <p id="video-title">Title: </p>
+                <p id="video-author">Author: </p>
+                <p id="video-quality">Video Quality: </p>
+            </div>
+        </div>
+        <div id="video-list-container">
+            <ul id="video-list"></ul>
+        </div>
+    </div>
+
+    <script>
+        const { ipcRenderer } = require('electron');
+
+        ipcRenderer.send('get-video-list');
+        ipcRenderer.on('video-list', (event, videoList) => {
+            const listElement = document.getElementById('video-list');
+            videoList.forEach((video) => {
+                const videoItem = document.createElement('li');
+                videoItem.className = 'video-item';
+                
+                const thumbnail = document.createElement('img');
+                thumbnail.src = video.thumbnailPath;
+                videoItem.appendChild(thumbnail);
+
+                const details = document.createElement('div');
+                details.className = 'video-details';
+
+                const title = document.createElement('p');
+                title.className = 'video-title';
+                title.textContent = video.title;
+
+                const author = document.createElement('p');
+                author.className = 'video-author';
+                author.textContent = video.author || 'Unknown';
+
+                details.appendChild(title);
+                details.appendChild(author);
+                videoItem.appendChild(details);
+
+                const duration = document.createElement('span');
+                duration.className = 'video-duration';
+                duration.textContent = video.timeDisplay || 'Unknown';
+                videoItem.appendChild(duration);
+
+                videoItem.addEventListener('click', () => {
+                    playVideo(video.videoPath, video);
+                });
+
+                listElement.appendChild(videoItem);
+            });
+        });
+
+        function playVideo(videoPath, video) {
+            const videoPlayer = document.getElementById('video-player');
+            videoPlayer.src = videoPath;
+            videoPlayer.play();
+
+            // 画面幅を確認して動画情報の表示を制御
+            if (window.innerWidth > 800) {
+                const videoInfo = document.getElementById('video-info');
+                videoInfo.style.display = 'block';
+                document.getElementById('video-title').textContent = `Title: ${video.title}`;
+                document.getElementById('video-author').textContent = `Author: ${video.author || 'Unknown'}`;
+                document.getElementById('video-quality').textContent = `Video Quality: ${video.videoQuality || 'Unknown'}`;
+            }
+        }
+    </script>
+</body>
+</html>
