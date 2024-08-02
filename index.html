@@ -36,7 +36,7 @@
             aspect-ratio: 16 / 9;
             background-color: rgb(41, 66, 80);
             border-radius: 12px;
-            object-fit: fixed;
+            object-fit: cover;
         }
 
         #video-info {
@@ -54,8 +54,29 @@
             width: 100%;
             max-width: 800px;
             overflow-y: auto;
-            background-color: #7676766f;
+            overflow-x: hidden; /* 横スクロールを防ぐ */
+            background-color: #76767680;
             border-radius: 12px;
+            padding-right: 10px; /* スクロールバーが被らないように */
+        }
+
+        /* スクロールバーのデザイン */
+        #video-list-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #video-list-container::-webkit-scrollbar-track {
+            background: #f4f4f4;
+            border-radius: 10px;
+        }
+
+        #video-list-container::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+
+        #video-list-container::-webkit-scrollbar-thumb:hover {
+            background: #555;
         }
 
         #video-list {
@@ -85,17 +106,24 @@
             flex-direction: column;
             justify-content: center;
             flex: 1;
+            min-width: 0; /* 親要素に合わせる */
         }
 
         .video-title {
             font-size: 16px;
             color: #000;
             margin: 0;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
         }
 
         .video-author {
             font-size: 14px;
             color: #606060;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
         }
 
         .video-duration {
@@ -127,6 +155,7 @@
                 max-width: 50%;
                 max-height: calc(100vh - 40px);
                 overflow-y: auto;
+                overflow-x: hidden; /* 横スクロールを防ぐ */
             }
 
             #video-info {
