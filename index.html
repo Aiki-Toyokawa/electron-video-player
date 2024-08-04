@@ -7,14 +7,14 @@
             font-family: Arial, sans-serif;
             margin: 0;
             background-color: #f4f4f4;
-            overflow: hidden;
+            overflow: hidden; /* 全体のスクロールを無効に */
         }
 
         #content {
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
             padding: 20px;
             height: 100vh;
         }
@@ -27,7 +27,7 @@
             width: 100%;
             max-width: 800px;
             margin-bottom: 20px;
-            flex-grow: 1;
+            flex-grow: 0;
         }
 
         #video-player {
@@ -36,7 +36,7 @@
             aspect-ratio: 16 / 9;
             background-color: rgb(41, 66, 80);
             border-radius: 12px;
-            object-fit: cover;
+            object-fit: fixed;
         }
 
         #video-info {
@@ -52,30 +52,41 @@
 
         #video-list-container {
             width: 100%;
+            height: auto;
             max-width: 800px;
-            overflow-y: auto;
-            overflow-x: hidden; /* 横スクロールを防ぐ */
             background-color: #76767680;
             border-radius: 12px;
-            padding-right: 10px; /* スクロールバーが被らないように */
+            padding: 10px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        #video-list-wrapper {
+            overflow-y: auto;
+            overflow-x: hidden; /* 横スクロールを防ぐ */
+            flex: 1;
+            border-radius: 12px;
+            max-height: 100%; /* ウィンドウの高さに合わせて変更 */
         }
 
         /* スクロールバーのデザイン */
-        #video-list-container::-webkit-scrollbar {
+        #video-list-wrapper::-webkit-scrollbar {
             width: 8px;
         }
 
-        #video-list-container::-webkit-scrollbar-track {
+        #video-list-wrapper::-webkit-scrollbar-track {
             background: #f4f4f4;
             border-radius: 10px;
         }
 
-        #video-list-container::-webkit-scrollbar-thumb {
+        #video-list-wrapper::-webkit-scrollbar-thumb {
             background: #888;
             border-radius: 10px;
         }
 
-        #video-list-container::-webkit-scrollbar-thumb:hover {
+        #video-list-wrapper::-webkit-scrollbar-thumb:hover {
             background: #555;
         }
 
@@ -92,11 +103,12 @@
             border-bottom: 1px solid #ccc;
             cursor: pointer;
             position: relative;
+            height: 80px; /* 一定の高さを設定 */
         }
 
         .video-item img {
             width: 120px;
-            height: auto;
+            height: 67.5px; /* 16:9のアスペクト比に合わせる */
             margin-right: 10px;
             border-radius: 8px;
         }
@@ -142,6 +154,7 @@
                 flex-direction: row;
                 align-items: flex-start;
                 justify-content: space-between;
+                overflow: hidden; /* 全体のスクロールを防ぐ */
             }
 
             #video-container {
@@ -154,13 +167,17 @@
             #video-list-container {
                 max-width: 50%;
                 max-height: calc(100vh - 40px);
-                overflow-y: auto;
-                overflow-x: hidden; /* 横スクロールを防ぐ */
             }
 
             #video-info {
                 display: block;
                 margin-top: 0;
+            }
+        }
+
+        @media (max-width: 800px) {
+            #video-list-container {
+                height: calc(100vh - 300px); /* 動画部分を差し引いた高さに変更 */
             }
         }
     </style>
@@ -176,7 +193,9 @@
             </div>
         </div>
         <div id="video-list-container">
-            <ul id="video-list"></ul>
+            <div id="video-list-wrapper">
+                <ul id="video-list"></ul>
+            </div>
         </div>
     </div>
 
