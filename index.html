@@ -16,7 +16,8 @@
             align-items: center;
             justify-content: flex-start;
             padding: 20px;
-            height: 100vh;
+            height: 100vh; /* 画面全体の高さを使用 */
+            box-sizing: border-box; /* パディングを含めた高さを計算 */
         }
 
         #video-container {
@@ -27,12 +28,10 @@
             width: 100%;
             max-width: 800px;
             margin-bottom: 20px;
-            flex-grow: 0;
         }
 
         #video-player {
             width: 100%;
-            height: auto;
             aspect-ratio: 16 / 9;
             background-color: rgb(41, 66, 80);
             border-radius: 12px;
@@ -52,15 +51,14 @@
 
         #video-list-container {
             width: 100%;
-            height: auto;
             max-width: 800px;
+            flex-grow: 1;
             background-color: #76767680;
             border-radius: 12px;
             padding: 10px;
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
-            flex-grow: 1;
         }
 
         #video-list-wrapper {
@@ -68,7 +66,6 @@
             overflow-x: hidden; /* 横スクロールを防ぐ */
             flex: 1;
             border-radius: 12px;
-            max-height: 100%; /* ウィンドウの高さに合わせて変更 */
         }
 
         /* スクロールバーのデザイン */
@@ -154,18 +151,15 @@
                 flex-direction: row;
                 align-items: flex-start;
                 justify-content: space-between;
-                overflow: hidden; /* 全体のスクロールを防ぐ */
             }
 
             #video-container {
-                max-width: 50%;
-                flex-grow: 1;
-                height: auto;
+                max-width: 55%;
                 margin-right: 20px; /* 動画とリストの間のスペース */
             }
 
             #video-list-container {
-                max-width: 50%;
+                max-width: 45%;
                 max-height: calc(100vh - 40px);
             }
 
@@ -177,7 +171,7 @@
 
         @media (max-width: 800px) {
             #video-list-container {
-                height: calc(100vh - 300px); /* 動画部分を差し引いた高さに変更 */
+                height: calc(100vh - (100vh * 9 / 16) - 120px); /* 動画部分を差し引いた高さに変更 */
             }
         }
     </style>
