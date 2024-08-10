@@ -108,6 +108,20 @@
             height: 67.5px; /* 16:9のアスペクト比に合わせる */
             margin-right: 10px;
             border-radius: 8px;
+            position: relative;
+        }
+
+        .video-item .video-duration {
+            position: absolute;
+            bottom: 26px;
+            left: 89px;
+            padding: 2px 4px;
+            font-size: 12px;
+            color: #fff;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 3px;
+            z-index: 1;
+            pointer-events: none;
         }
 
         .video-details {
@@ -135,17 +149,6 @@
             text-overflow: ellipsis;
         }
 
-        .video-duration {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            padding: 2px 4px;
-            font-size: 12px;
-            color: #fff;
-            background-color: rgba(0, 0, 0, 0.7);
-            border-radius: 3px;
-        }
-
         @media (min-width: 801px) {
             #content {
                 flex-direction: row;
@@ -171,7 +174,7 @@
 
         @media (max-width: 800px) {
             #video-list-container {
-                height: calc(100vh - (100vh * 9 / 16) - 120px); /* 動画部分を差し引いた高さに変更 */
+                height: calc(100vh - (100vh * 9 / 16) - 10000px); /* 動画部分を差し引いた高さに変更 */
             }
         }
     </style>
