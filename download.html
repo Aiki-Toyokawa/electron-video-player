@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Music Download</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        .progress-bar {
+            width: 300px;
+            height: 20px;
+            background-color: #ddd;
+            border-radius: 10px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 0;
+            background-color: #4CAF50;
+            border-radius: 10px;
+            transition: width 0.5s;
+        }
+    </style>
+</head>
+<body>
+    <h1>Music Download</h1>
+    <div class="progress-bar">
+        <div class="progress-bar-fill"></div>
+    </div>
+
+    <script>
+        // シンプルなダウンロード進捗のシミュレーション
+        let progress = 0;
+        const progressBarFill = document.querySelector('.progress-bar-fill');
+
+        function updateProgress() {
+            progress += 10;
+            progressBarFill.style.width = progress + '%';
+
+            if (progress < 100) {
+                setTimeout(updateProgress, 1000);
+            } else {
+                alert('Download Complete!');
+            }
+        }
+
+        // ダウンロードの開始をシミュレート
+        setTimeout(updateProgress, 1000);
+    </script>
+</body>
+</html>

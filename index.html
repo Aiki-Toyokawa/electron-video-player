@@ -1,274 +1,43 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Video Player</title>
+    <title>Home</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             background-color: #f4f4f4;
-            overflow: hidden; /* 全体のスクロールを無効に */
-        }
-
-        #content {
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            padding: 20px;
-            height: 100vh; /* 画面全体の高さを使用 */
-            box-sizing: border-box; /* パディングを含めた高さを計算 */
-        }
-
-        #video-container {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-            max-width: 800px;
-            margin-bottom: 20px;
-        }
-
-        #video-player {
-            width: 100%;
-            aspect-ratio: 16 / 9;
-            background-color: rgb(41, 66, 80);
-            border-radius: 12px;
-            object-fit: fixed;
-        }
-
-        #video-info {
-            margin-top: 10px;
-            width: 100%;
-            max-width: 800px;
-            display: none; /* デフォルトで非表示 */
-        }
-
-        #video-info p {
-            margin: 5px 0;
-        }
-
-        #video-list-container {
-            width: 100%;
-            max-width: 800px;
-            flex-grow: 1;
-            background-color: #76767680;
-            border-radius: 12px;
-            padding: 10px;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-        }
-
-        #video-list-wrapper {
-            overflow-y: auto;
-            overflow-x: hidden; /* 横スクロールを防ぐ */
-            flex: 1;
-            border-radius: 12px;
-        }
-
-        /* スクロールバーのデザイン */
-        #video-list-wrapper::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        #video-list-wrapper::-webkit-scrollbar-track {
-            background: #f4f4f4;
-            border-radius: 10px;
-        }
-
-        #video-list-wrapper::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 10px;
-        }
-
-        #video-list-wrapper::-webkit-scrollbar-thumb:hover {
-            background: #555;
-        }
-
-        #video-list {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .video-item {
-            display: flex;
-            align-items: flex-start;
-            padding: 10px;
-            border-bottom: 1px solid #ccc;
-            cursor: pointer;
-            position: relative;
-            height: 80px; /* 一定の高さを設定 */
-        }
-
-        .video-item img {
-            width: 120px;
-            height: 67.5px; /* 16:9のアスペクト比に合わせる */
-            margin-right: 10px;
-            border-radius: 8px;
-            position: relative;
-        }
-
-        .video-item .video-duration {
-            position: absolute;
-            bottom: 26px;
-            left: 89px;
-            padding: 2px 4px;
-            font-size: 12px;
-            color: #fff;
-            background-color: rgba(0, 0, 0, 0.7);
-            border-radius: 3px;
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        .video-details {
-            display: flex;
-            flex-direction: column;
             justify-content: center;
-            flex: 1;
-            min-width: 0; /* 親要素に合わせる */
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
         }
 
-        .video-title {
-            font-size: 16px;
-            color: #000;
-            margin: 0;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
+        .button {
+            padding: 20px;
+            margin: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
         }
 
-        .video-author {
-            font-size: 14px;
-            color: #606060;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-        }
-
-        @media (min-width: 801px) {
-            #content {
-                flex-direction: row;
-                align-items: flex-start;
-                justify-content: space-between;
-            }
-
-            #video-container {
-                max-width: 55%;
-                margin-right: 20px; /* 動画とリストの間のスペース */
-            }
-
-            #video-list-container {
-                max-width: 45%;
-                max-height: calc(100vh - 40px);
-            }
-
-            #video-info {
-                display: block;
-                margin-top: 0;
-            }
-        }
-
-        @media (max-width: 800px) {
-            #video-list-container {
-                height: calc(100vh - (100vh * 9 / 16) - 100px); /* 動画部分を差し引いた高さにする */
-            }
+        .button:hover {
+            background-color: #45a049;
         }
     </style>
 </head>
 <body>
-    <div id="content">
-        <div id="video-container">
-            <video id="video-player" controls></video>
-            <div id="video-info">
-                <p id="video-title">Title: </p>
-                <p id="video-author">Author: </p>
-                <p id="video-quality">Video Quality: </p>
-            </div>
-        </div>
-        <div id="video-list-container">
-            <div id="video-list-wrapper">
-                <ul id="video-list"></ul>
-            </div>
-        </div>
-    </div>
+    <h1>Home</h1>
+    <button class="button" onclick="navigateTo('player.html')">音楽プレイヤー画面</button>
+    <button class="button" onclick="navigateTo('download.html')">音楽DL画面</button>
 
     <script>
-        const { ipcRenderer } = require('electron');
-        let currentVideoIndex = 0; // 現在の動画インデックスを保持
-        let videoList = []; // ビデオリストを保持
-
-        ipcRenderer.send('get-video-list');
-        ipcRenderer.on('video-list', (event, list) => {
-            videoList = list; // グローバル変数にリストを格納
-            const listElement = document.getElementById('video-list');
-            videoList.forEach((video, index) => {
-                const videoItem = document.createElement('li');
-                videoItem.className = 'video-item';
-                
-                const thumbnail = document.createElement('img');
-                thumbnail.src = video.thumbnailPath;
-                videoItem.appendChild(thumbnail);
-
-                const details = document.createElement('div');
-                details.className = 'video-details';
-
-                const title = document.createElement('p');
-                title.className = 'video-title';
-                title.textContent = video.title;
-
-                const author = document.createElement('p');
-                author.className = 'video-author';
-                author.textContent = video.author || 'Unknown';
-
-                details.appendChild(title);
-                details.appendChild(author);
-                videoItem.appendChild(details);
-
-                const duration = document.createElement('span');
-                duration.className = 'video-duration';
-                duration.textContent = video.timeDisplay || 'Unknown';
-                videoItem.appendChild(duration);
-
-                videoItem.addEventListener('click', () => {
-                    currentVideoIndex = index; // クリックされた動画のインデックスを更新
-                    playVideo(video.videoPath, video);
-                });
-
-                listElement.appendChild(videoItem);
-            });
-
-            // 最初の動画を自動的に再生
-            playVideo(videoList[currentVideoIndex].videoPath, videoList[currentVideoIndex]);
-        });
-
-        function playVideo(videoPath, video) {
-            const videoPlayer = document.getElementById('video-player');
-            videoPlayer.src = videoPath;
-            videoPlayer.play();
-
-            const videoInfo = document.getElementById('video-info');
-            const screenWidth = window.innerWidth;
-
-            if (screenWidth > 800) {
-                // 動画の情報を表示
-                document.getElementById('video-title').textContent = `Title: ${video.title}`;
-                document.getElementById('video-author').textContent = `Author: ${video.author || 'Unknown'}`;
-                document.getElementById('video-quality').textContent = `Video Quality: ${video.videoQuality || 'Unknown'}`;
-                videoInfo.style.display = 'block';
-            } else {
-                // 画面幅が800px以下の場合、動画情報を非表示にする
-                videoInfo.style.display = 'none';
-            }
-
-            // 動画が終了したら次の動画を再生
-            videoPlayer.onended = () => {
-                currentVideoIndex = (currentVideoIndex + 1) % videoList.length; // 次の動画に移動
-                playVideo(videoList[currentVideoIndex].videoPath, videoList[currentVideoIndex]);
-            };
+        function navigateTo(page) {
+            window.location.href = page;
         }
     </script>
 </body>

@@ -6,10 +6,10 @@ let mainWindow;
 
 function createWindow() {
     mainWindow = new BrowserWindow({
-        minWidth:300,
-        minHeight:620,
-        maxWidth:1600,
-        width:  800,
+        minWidth: 300,
+        minHeight: 620,
+        maxWidth: 1600,
+        width: 800,
         height: 700,
         webPreferences: {
             nodeIntegration: true,
@@ -17,7 +17,7 @@ function createWindow() {
         }
     });
 
-    mainWindow.loadFile('index.html');
+    mainWindow.loadFile('index.html'); // Home画面が最初に表示される
 
     Menu.setApplicationMenu(null);
 
@@ -38,7 +38,6 @@ ipcMain.on('get-video-list', (event) => {
         const videoList = files.map(file => {
             const infoPath = path.join(videoDir, file, 'info.json');
             const info = JSON.parse(fs.readFileSync(infoPath, 'utf8'));
-            // console.log(info); // デバッグ用：読み取った情報をコンソールに出力
             return {
                 title: info.title,
                 videoPath: path.join(videoDir, file, 'music.mp4'),
@@ -51,4 +50,16 @@ ipcMain.on('get-video-list', (event) => {
         });
         event.reply('video-list', videoList);
     });
+});
+
+app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') {
+        app.quit();
+    }
+});
+
+app.on('activate', () => {
+    if (BrowserWindow.getAllWindows().length === 0) {
+        createWindow();
+    }
 });
