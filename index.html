@@ -174,7 +174,7 @@
 
         @media (max-width: 800px) {
             #video-list-container {
-                height: calc(100vh - (100vh * 9 / 16) - 10000px); /* 動画部分を差し引いた高さに変更 */
+                height: calc(100vh - (100vh * 9 / 16) - 100px); /* 動画部分を差し引いた高さにする */
             }
         }
     </style>
@@ -198,11 +198,14 @@
 
     <script>
         const { ipcRenderer } = require('electron');
+        let currentVideoIndex = 0; // 現在の動画インデックスを保持
+        let videoList = []; // ビデオリストを保持
 
         ipcRenderer.send('get-video-list');
-        ipcRenderer.on('video-list', (event, videoList) => {
+        ipcRenderer.on('video-list', (event, list) => {
+            videoList = list; // グローバル変数にリストを格納
             const listElement = document.getElementById('video-list');
-            videoList.forEach((video) => {
+            videoList.forEach((video, index) => {
                 const videoItem = document.createElement('li');
                 videoItem.className = 'video-item';
                 
@@ -231,11 +234,15 @@
                 videoItem.appendChild(duration);
 
                 videoItem.addEventListener('click', () => {
+                    currentVideoIndex = index; // クリックされた動画のインデックスを更新
                     playVideo(video.videoPath, video);
                 });
 
                 listElement.appendChild(videoItem);
             });
+
+            // 最初の動画を自動的に再生
+            playVideo(videoList[currentVideoIndex].videoPath, videoList[currentVideoIndex]);
         });
 
         function playVideo(videoPath, video) {
@@ -243,14 +250,25 @@
             videoPlayer.src = videoPath;
             videoPlayer.play();
 
-            // 画面幅を確認して動画情報の表示を制御
-            if (window.innerWidth > 800) {
-                const videoInfo = document.getElementById('video-info');
-                videoInfo.style.display = 'block';
+            const videoInfo = document.getElementById('video-info');
+            const screenWidth = window.innerWidth;
+
+            if (screenWidth > 800) {
+                // 動画の情報を表示
                 document.getElementById('video-title').textContent = `Title: ${video.title}`;
                 document.getElementById('video-author').textContent = `Author: ${video.author || 'Unknown'}`;
                 document.getElementById('video-quality').textContent = `Video Quality: ${video.videoQuality || 'Unknown'}`;
+                videoInfo.style.display = 'block';
+            } else {
+                // 画面幅が800px以下の場合、動画情報を非表示にする
+                videoInfo.style.display = 'none';
             }
+
+            // 動画が終了したら次の動画を再生
+            videoPlayer.onended = () => {
+                currentVideoIndex = (currentVideoIndex + 1) % videoList.length; // 次の動画に移動
+                playVideo(videoList[currentVideoIndex].videoPath, videoList[currentVideoIndex]);
+            };
         }
     </script>
 </body>
