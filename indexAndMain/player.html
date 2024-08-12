@@ -3,21 +3,24 @@
 <head>
     <title>Video Player</title>
     <style>
-        .player-body {
+        body {
             font-family: Arial, sans-serif;
             margin: 0;
             background-color: #f4f4f4;
-            overflow: hidden;
+            overflow: hidden; /* 全体のスクロールを無効に */
+        }
+
+        #content {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: flex-start;
             padding: 20px;
-            height: 100vh;
-            box-sizing: border-box;
+            height: 100vh; /* 画面全体の高さを使用 */
+            box-sizing: border-box; /* パディングを含めた高さを計算 */
         }
 
-        .player-video-container {
+        #video-container {
             position: relative;
             display: flex;
             flex-direction: column;
@@ -27,25 +30,26 @@
             margin-bottom: 20px;
         }
 
-        .player-video-player {
+        #video-player {
             width: 100%;
             aspect-ratio: 16 / 9;
             background-color: rgb(41, 66, 80);
             border-radius: 12px;
+            object-fit: fixed;
         }
 
-        .player-video-info {
+        #video-info {
             margin-top: 10px;
             width: 100%;
             max-width: 800px;
-            display: none;
+            display: none; /* デフォルトで非表示 */
         }
 
-        .player-video-info p {
+        #video-info p {
             margin: 5px 0;
         }
 
-        .player-video-list-container {
+        #video-list-container {
             width: 100%;
             max-width: 800px;
             flex-grow: 1;
@@ -57,56 +61,57 @@
             flex-direction: column;
         }
 
-        .player-video-list-wrapper {
+        #video-list-wrapper {
             overflow-y: auto;
-            overflow-x: hidden;
+            overflow-x: hidden; /* 横スクロールを防ぐ */
             flex: 1;
             border-radius: 12px;
         }
 
-        .player-video-list-wrapper::-webkit-scrollbar {
+        /* スクロールバーのデザイン */
+        #video-list-wrapper::-webkit-scrollbar {
             width: 8px;
         }
 
-        .player-video-list-wrapper::-webkit-scrollbar-track {
+        #video-list-wrapper::-webkit-scrollbar-track {
             background: #f4f4f4;
             border-radius: 10px;
         }
 
-        .player-video-list-wrapper::-webkit-scrollbar-thumb {
+        #video-list-wrapper::-webkit-scrollbar-thumb {
             background: #888;
             border-radius: 10px;
         }
 
-        .player-video-list-wrapper::-webkit-scrollbar-thumb:hover {
+        #video-list-wrapper::-webkit-scrollbar-thumb:hover {
             background: #555;
         }
 
-        .player-video-list {
+        #video-list {
             list-style-type: none;
             padding: 0;
             margin: 0;
         }
 
-        .player-video-item {
+        .video-item {
             display: flex;
             align-items: flex-start;
             padding: 10px;
             border-bottom: 1px solid #ccc;
             cursor: pointer;
             position: relative;
-            height: 80px;
+            height: 80px; /* 一定の高さを設定 */
         }
 
-        .player-video-item img {
+        .video-item img {
             width: 120px;
-            height: 67.5px;
+            height: 67.5px; /* 16:9のアスペクト比に合わせる */
             margin-right: 10px;
             border-radius: 8px;
             position: relative;
         }
 
-        .player-video-item .player-video-duration {
+        .video-item .video-duration {
             position: absolute;
             bottom: 26px;
             left: 89px;
@@ -119,15 +124,15 @@
             pointer-events: none;
         }
 
-        .player-video-details {
+        .video-details {
             display: flex;
             flex-direction: column;
             justify-content: center;
             flex: 1;
-            min-width: 0;
+            min-width: 0; /* 親要素に合わせる */
         }
 
-        .player-video-title {
+        .video-title {
             font-size: 16px;
             color: #000;
             margin: 0;
@@ -136,7 +141,7 @@
             text-overflow: ellipsis;
         }
 
-        .player-video-author {
+        .video-author {
             font-size: 14px;
             color: #606060;
             overflow: hidden;
@@ -145,76 +150,75 @@
         }
 
         @media (min-width: 801px) {
-            .player-body {
+            #content {
                 flex-direction: row;
                 align-items: flex-start;
                 justify-content: space-between;
             }
 
-            .player-video-container {
+            #video-container {
                 max-width: 55%;
-                margin-right: 20px;
+                margin-right: 20px; /* 動画とリストの間のスペース */
             }
 
-            .player-video-list-container {
+            #video-list-container {
                 max-width: 45%;
                 max-height: calc(100vh - 40px);
             }
 
-            .player-video-info {
+            #video-info {
                 display: block;
                 margin-top: 0;
             }
         }
 
         @media (max-width: 800px) {
-            .player-video-list-container {
-                height: calc(100vh - (100vh * 9 / 16) - 100px);
+            #video-list-container {
+                height: calc(100vh - (100vh * 9 / 16) - 10000px); /* 動画部分を差し引いた高さに変更 */
             }
         }
     </style>
 </head>
-<body class="player-body">
-    <div class="player-video-container">
-        <video class="player-video-player" controls></video>
-        <div class="player-video-info">
-            <p class="player-video-title">Title: </p>
-            <p class="player-video-author">Author: </p>
-            <p class="player-video-quality">Video Quality: </p>
+<body>
+    <div id="content">
+        <div id="video-container">
+            <video id="video-player" controls></video>
+            <div id="video-info">
+                <p id="video-title">Title: </p>
+                <p id="video-author">Author: </p>
+                <p id="video-quality">Video Quality: </p>
+            </div>
         </div>
-    </div>
-    <div class="player-video-list-container">
-        <div class="player-video-list-wrapper">
-            <ul class="player-video-list"></ul>
+        <div id="video-list-container">
+            <div id="video-list-wrapper">
+                <ul id="video-list"></ul>
+            </div>
         </div>
     </div>
 
     <script>
         const { ipcRenderer } = require('electron');
-        let currentVideoIndex = 0;
-        let videoList = [];
-
+        
         ipcRenderer.send('get-video-list');
-        ipcRenderer.on('video-list', (event, list) => {
-            videoList = list;
-            const listElement = document.querySelector('.player-video-list');
-            videoList.forEach((video, index) => {
+        ipcRenderer.on('video-list', (event, videoList) => {
+            const listElement = document.getElementById('video-list');
+            videoList.forEach((video) => {
                 const videoItem = document.createElement('li');
-                videoItem.className = 'player-video-item';
+                videoItem.className = 'video-item';
                 
                 const thumbnail = document.createElement('img');
                 thumbnail.src = video.thumbnailPath;
                 videoItem.appendChild(thumbnail);
 
                 const details = document.createElement('div');
-                details.className = 'player-video-details';
+                details.className = 'video-details';
 
                 const title = document.createElement('p');
-                title.className = 'player-video-title';
+                title.className = 'video-title';
                 title.textContent = video.title;
 
                 const author = document.createElement('p');
-                author.className = 'player-video-author';
+                author.className = 'video-author';
                 author.textContent = video.author || 'Unknown';
 
                 details.appendChild(title);
@@ -222,43 +226,31 @@
                 videoItem.appendChild(details);
 
                 const duration = document.createElement('span');
-                duration.className = 'player-video-duration';
+                duration.className = 'video-duration';
                 duration.textContent = video.timeDisplay || 'Unknown';
                 videoItem.appendChild(duration);
 
                 videoItem.addEventListener('click', () => {
-                    currentVideoIndex = index;
                     playVideo(video.videoPath, video);
                 });
 
                 listElement.appendChild(videoItem);
             });
-
-            playVideo(videoList[currentVideoIndex].videoPath, videoList[currentVideoIndex]);
         });
 
         function playVideo(videoPath, video) {
-            const videoPlayer = document.querySelector('.player-video-player');
-            console.log('Playing video:', videoPath); // Debugging output
+            const videoPlayer = document.getElementById('video-player');
             videoPlayer.src = videoPath;
             videoPlayer.play();
 
-            const videoInfo = document.querySelector('.player-video-info');
-            const screenWidth = window.innerWidth;
-
-            if (screenWidth > 800) {
-                document.querySelector('.player-video-title').textContent = `Title: ${video.title}`;
-                document.querySelector('.player-video-author').textContent = `Author: ${video.author || 'Unknown'}`;
-                document.querySelector('.player-video-quality').textContent = `Video Quality: ${video.videoQuality || 'Unknown'}`;
+            // 画面幅を確認して動画情報の表示を制御
+            if (window.innerWidth > 800) {
+                const videoInfo = document.getElementById('video-info');
                 videoInfo.style.display = 'block';
-            } else {
-                videoInfo.style.display = 'none';
+                document.getElementById('video-title').textContent = `Title: ${video.title}`;
+                document.getElementById('video-author').textContent = `Author: ${video.author || 'Unknown'}`;
+                document.getElementById('video-quality').textContent = `Video Quality: ${video.videoQuality || 'Unknown'}`;
             }
-
-            videoPlayer.onended = () => {
-                currentVideoIndex = (currentVideoIndex + 1) % videoList.length;
-                playVideo(videoList[currentVideoIndex].videoPath, videoList[currentVideoIndex]);
-            };
         }
     </script>
 </body>
