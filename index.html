@@ -61,7 +61,21 @@
                 .then(response => response.text())
                 .then(data => {
                     content.innerHTML = data;
+                    executeScripts(content);
                 });
+        }
+
+        function executeScripts(element) {
+            const scripts = element.querySelectorAll('script');
+            scripts.forEach(script => {
+                const newScript = document.createElement('script');
+                if (script.src) {
+                    newScript.src = script.src;
+                } else {
+                    newScript.textContent = script.textContent;
+                }
+                document.head.appendChild(newScript).parentNode.removeChild(newScript);
+            });
         }
 
         // 初期表示はHomeページ
