@@ -1,61 +1,79 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Music Download</title>
+    <title>download.html</title>
     <style>
-        .download-body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            background-color: #f4f4f4;
+        #controls {
+            width: 100%;
+            background-color: #f0f0f0;
+            padding: 10px;
+            box-sizing: border-box;
             display: flex;
-            justify-content: center;
             align-items: center;
-            height: 100vh;
-            flex-direction: column;
+            justify-content: space-between;
         }
 
-        .download-progress-bar {
-            width: 300px;
-            height: 20px;
-            background-color: #ddd;
-            border-radius: 10px;
-            margin-top: 20px;
+        #urlInput {
+            width: 60%;
+            padding: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            margin-left: 5px;
+            padding: 5px 10px;
+            font-size: 16px;
+        }
+
+        #browser-container {
+            flex-grow: 1;
             overflow: hidden;
-        }
-
-        .download-progress-bar-fill {
-            height: 100%;
-            width: 0;
-            background-color: #4CAF50;
-            border-radius: 10px;
-            transition: width 0.5s;
+            height: calc(100vh - 60px); /* Controls height deducted */
         }
     </style>
 </head>
-<body class="download-body">
-    <h1>Music Download</h1>
-    <div class="download-progress-bar">
-        <div class="download-progress-bar-fill"></div>
+<body>
+    <div id="controls">
+        <button onclick="goBack()">Back</button>
+        <button onclick="goForward()">Forward</button>
+        <button onclick="reloadPage()">Reload</button>
+        <input type="text" id="urlInput" placeholder="Enter URL" />
+        <button onclick="loadURL()">Search</button>
+    </div>
+
+    <div id="browser-container">
+        <!-- This is where the BrowserView will be embedded -->
     </div>
 
     <script>
-        // シンプルなダウンロード進捗のシミュレーション
-        let progress = 0;
-        const progressBarFill = document.querySelector('.download-progress-bar-fill');
+        const { ipcRenderer } = require('electron');
 
-        function updateProgress() {
-            progress += 10;
-            progressBarFill.style.width = progress + '%';
-
-            if (progress < 100) {
-                setTimeout(updateProgress, 1000);
-            } else {
-                alert('Download Complete!');
-            }
+        function loadURL() {
+            const url = document.getElementById('urlInput').value;
+            ipcRenderer.send('load-url', url);
         }
 
-        // ダウンロードの開始をシミュレート
-        setTimeout(updateProgress, 1000);
+        function goBack() {
+            ipcRenderer.send('go-back');
+        }
+
+        function goForward() {
+            ipcRenderer.send('go-forward');
+        }
+
+        function reloadPage() {
+            ipcRenderer.send('reload-page');
+        }
+
+        window.onbeforeunload = () => {
+            ipcRenderer.send('remove-browser-view');
+        };
+
+        // Load YouTube on initial load
+        window.onload = () => {
+            document.getElementById('urlInput').value = 'https://www.youtube.com';
+            loadURL();
+        };
     </script>
 </body>
 </html>

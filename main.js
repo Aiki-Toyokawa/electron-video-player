@@ -1,8 +1,9 @@
-const { app, BrowserWindow, ipcMain, Menu } = require('electron');
+const { app, BrowserWindow, BrowserView, ipcMain, Menu } = require('electron');
 const fs = require('fs');
 const path = require('path');
 
 let mainWindow;
+let browserView;
 
 function createWindow() {
     mainWindow = new BrowserWindow({
@@ -17,7 +18,7 @@ function createWindow() {
         }
     });
 
-    mainWindow.loadFile('index.html'); // Home画面が最初に表示される
+    mainWindow.loadFile('index.html'); // 初期表示はHome画面
 
     Menu.setApplicationMenu(null);
 
@@ -50,6 +51,48 @@ ipcMain.on('get-video-list', (event) => {
         });
         event.reply('video-list', videoList);
     });
+});
+
+ipcMain.on('load-url', (event, url) => {
+    if (!browserView) {
+        browserView = new BrowserView({
+            webPreferences: {
+                contextIsolation: true,
+                nodeIntegration: false,
+                sandbox: true,
+            }
+        });
+        mainWindow.setBrowserView(browserView);
+        browserView.setBounds({ x: 0, y: 60, width: mainWindow.getBounds().width, height: mainWindow.getBounds().height - 60 });
+        browserView.setAutoResize({ width: true, height: true });
+    }
+    browserView.webContents.loadURL(url);
+});
+
+ipcMain.on('remove-browser-view', () => {
+    if (browserView) {
+        mainWindow.removeBrowserView(browserView);
+        browserView.destroy();
+        browserView = null;
+    }
+});
+
+ipcMain.on('go-back', () => {
+    if (browserView && browserView.webContents.canGoBack()) {
+        browserView.webContents.goBack();
+    }
+});
+
+ipcMain.on('go-forward', () => {
+    if (browserView && browserView.webContents.canGoForward()) {
+        browserView.webContents.goForward();
+    }
+});
+
+ipcMain.on('reload-page', () => {
+    if (browserView) {
+        browserView.webContents.reload();
+    }
 });
 
 app.on('window-all-closed', () => {

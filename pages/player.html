@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Video Player</title>
+    <title>player.html</title>
     <style>
         .player-body {
             font-family: Arial, sans-serif;
@@ -13,14 +13,11 @@
             align-items: center;
             justify-content: flex-start;
             padding: 20px;
-            height: 100%;
+            height: 100vh; /* 100% of the viewport height */
+            box-sizing: border-box;
         }
 
         .player-video-container {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
             width: 100%;
             max-width: 800px;
             margin-bottom: 20px;
@@ -40,20 +37,17 @@
             display: none;
         }
 
-        .player-video-info p {
-            margin: 5px 0;
-        }
-
         .player-video-list-container {
             width: 100%;
             max-width: 800px;
-            flex-grow: 1;
             background-color: #76767680;
             border-radius: 12px;
             padding: 10px;
             box-sizing: border-box;
+            flex-grow: 1;
             display: flex;
             flex-direction: column;
+            height: calc(100vh - (100vw * 9 / 16) - 105px); /* 動画プレイヤーの高さと他の要素の高さを差し引く */
         }
 
         .player-video-list-wrapper {
@@ -102,13 +96,12 @@
             height: 67.5px;
             margin-right: 10px;
             border-radius: 8px;
-            position: relative;
         }
 
         .player-video-item .player-video-duration {
             position: absolute;
-            bottom: 26px;
-            left: 89px;
+            bottom: 7px;
+            left: 88px;
             padding: 2px 4px;
             font-size: 12px;
             color: #fff;
@@ -157,18 +150,12 @@
 
             .player-video-list-container {
                 max-width: 45%;
-                max-height: calc(90vh - 40px);
+                height: 85vh; /* 高さを100%に */
             }
 
             .player-video-info {
                 display: block;
                 margin-top: 0;
-            }
-        }
-
-        @media (max-width: 800px) {
-            .player-video-list-container {
-                height: calc(100vh - (100vh * 9 / 16)); /* 動画部分を差し引いた高さを自動計算 */
             }
         }
     </style>
