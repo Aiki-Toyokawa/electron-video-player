@@ -1,4 +1,8 @@
-dl/
+# folders
 node_modules/
+dl/
+musicFolder/
+
+# files
 tmp.html
 tmp.js

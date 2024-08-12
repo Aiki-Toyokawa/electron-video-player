@@ -3,7 +3,7 @@
 <head>
     <title>Music Download</title>
     <style>
-        body {
+        .download-body {
             font-family: Arial, sans-serif;
             margin: 0;
             background-color: #f4f4f4;
@@ -14,7 +14,7 @@
             flex-direction: column;
         }
 
-        .progress-bar {
+        .download-progress-bar {
             width: 300px;
             height: 20px;
             background-color: #ddd;
@@ -23,7 +23,7 @@
             overflow: hidden;
         }
 
-        .progress-bar-fill {
+        .download-progress-bar-fill {
             height: 100%;
             width: 0;
             background-color: #4CAF50;
@@ -32,16 +32,16 @@
         }
     </style>
 </head>
-<body>
+<body class="download-body">
     <h1>Music Download</h1>
-    <div class="progress-bar">
-        <div class="progress-bar-fill"></div>
+    <div class="download-progress-bar">
+        <div class="download-progress-bar-fill"></div>
     </div>
 
     <script>
         // シンプルなダウンロード進捗のシミュレーション
         let progress = 0;
-        const progressBarFill = document.querySelector('.progress-bar-fill');
+        const progressBarFill = document.querySelector('.download-progress-bar-fill');
 
         function updateProgress() {
             progress += 10;
