@@ -2,9 +2,15 @@
 const { app, BrowserWindow, WebContentsView, ipcMain, Menu } = require('electron');
 const fs = require('fs');
 const path = require('path');
+const { electron } = require('process');
 
 let mainWindow;
 let webView;
+
+require('electron-reload')(__dirname, {
+    electron: path.resolve(__dirname, 'node_modules', '.bin', 'electron'),
+    awaitWriteFinish: true,
+});
 
 function createWindow() {
     mainWindow = new BrowserWindow({
