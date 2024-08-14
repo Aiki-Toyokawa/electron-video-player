@@ -1,10 +1,10 @@
 // main.js(EntryPoint このコメントアウトを消すな)
-const { app, BrowserWindow, BrowserView, ipcMain, Menu } = require('electron');
+const { app, BrowserWindow, WebContentsView, ipcMain, Menu } = require('electron');
 const fs = require('fs');
 const path = require('path');
 
 let mainWindow;
-let browserView;
+let webView;
 
 function createWindow() {
     mainWindow = new BrowserWindow({
@@ -55,49 +55,51 @@ ipcMain.on('get-video-list', (event) => {
 });
 
 ipcMain.on('load-url', (event, url) => {
-    if (browserView) {
-        mainWindow.removeBrowserView(browserView);
-        browserView.destroy();
-        browserView = null;
+    if (webView) {
+        mainWindow.removeBrowserView(webView);
+        webView.webContents.destroy();
+        webView = null;
     }
 
-    browserView = new BrowserView({
-        webPreferences: {
-            contextIsolation: true,
-            nodeIntegration: false,
-            sandbox: true,
-        }
-    });
-    mainWindow.setBrowserView(browserView);
-    browserView.setBounds({ x: 0, y: 60, width: mainWindow.getBounds().width, height: mainWindow.getBounds().height - 60 });
-    browserView.setAutoResize({ width: true, height: true });
+    const webContents = mainWindow.webContents;
+    webView = new WebContentsView(webContents);
 
-    browserView.webContents.loadURL(url);
+    mainWindow.addBrowserView(webView);
+    const bounds = mainWindow.getContentBounds();
+    const headerHeight = 60;
+    webView.setBounds({
+        x: 0,
+        y: headerHeight,
+        width: bounds.width,
+        height: bounds.height - headerHeight,
+    });
+
+    webView.webContents.loadURL(url);
 });
 
-ipcMain.on('remove-browser-view', () => {
-    if (browserView) {
-        mainWindow.removeBrowserView(browserView);
-        browserView.destroy();
-        browserView = null;
+ipcMain.on('remove-webview', () => {
+    if (webView) {
+        mainWindow.removeBrowserView(webView);
+        webView.webContents.destroy();
+        webView = null;
     }
 });
 
 ipcMain.on('go-back', () => {
-    if (browserView && browserView.webContents.canGoBack()) {
-        browserView.webContents.goBack();
+    if (webView && webView.webContents.canGoBack()) {
+        webView.webContents.goBack();
     }
 });
 
 ipcMain.on('go-forward', () => {
-    if (browserView && browserView.webContents.canGoForward()) {
-        browserView.webContents.goForward();
+    if (webView && webView.webContents.canGoForward()) {
+        webView.webContents.goForward();
     }
 });
 
 ipcMain.on('reload-page', () => {
-    if (browserView) {
-        browserView.webContents.reload();
+    if (webView) {
+        webView.webContents.reload();
     }
 });
 
