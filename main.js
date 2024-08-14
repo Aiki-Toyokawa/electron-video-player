@@ -1,3 +1,4 @@
+// main.js(EntryPoint このコメントアウトを消すな)
 const { app, BrowserWindow, BrowserView, ipcMain, Menu } = require('electron');
 const fs = require('fs');
 const path = require('path');
@@ -54,18 +55,23 @@ ipcMain.on('get-video-list', (event) => {
 });
 
 ipcMain.on('load-url', (event, url) => {
-    if (!browserView) {
-        browserView = new BrowserView({
-            webPreferences: {
-                contextIsolation: true,
-                nodeIntegration: false,
-                sandbox: true,
-            }
-        });
-        mainWindow.setBrowserView(browserView);
-        browserView.setBounds({ x: 0, y: 60, width: mainWindow.getBounds().width, height: mainWindow.getBounds().height - 60 });
-        browserView.setAutoResize({ width: true, height: true });
+    if (browserView) {
+        mainWindow.removeBrowserView(browserView);
+        browserView.destroy();
+        browserView = null;
     }
+
+    browserView = new BrowserView({
+        webPreferences: {
+            contextIsolation: true,
+            nodeIntegration: false,
+            sandbox: true,
+        }
+    });
+    mainWindow.setBrowserView(browserView);
+    browserView.setBounds({ x: 0, y: 60, width: mainWindow.getBounds().width, height: mainWindow.getBounds().height - 60 });
+    browserView.setAutoResize({ width: true, height: true });
+
     browserView.webContents.loadURL(url);
 });
 

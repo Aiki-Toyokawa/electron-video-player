@@ -65,14 +65,14 @@
             ipcRenderer.send('reload-page');
         }
 
-        window.onbeforeunload = () => {
-            ipcRenderer.send('remove-browser-view');
-        };
-
         // Load YouTube on initial load
         window.onload = () => {
             document.getElementById('urlInput').value = 'https://www.youtube.com';
             loadURL();
+        };
+
+        window.onbeforeunload = () => {
+            ipcRenderer.send('remove-browser-view'); // BrowserView を削除
         };
     </script>
 </body>
