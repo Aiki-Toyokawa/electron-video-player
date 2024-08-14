@@ -2,12 +2,12 @@
 const { app, BrowserWindow, WebContentsView, ipcMain, Menu } = require('electron');
 const fs = require('fs');
 const path = require('path');
-const { electron } = require('process');
 
 let mainWindow;
 let webView;
 
 require('electron-reload')(__dirname, {
+    // electron: path.resolve(__dirname, '..', 'node_modules', '.bin', 'electron'),
     electron: path.resolve(__dirname, 'node_modules', '.bin', 'electron'),
     awaitWriteFinish: true,
 });
@@ -37,7 +37,7 @@ function createWindow() {
 app.whenReady().then(createWindow);
 
 ipcMain.on('get-video-list', (event) => {
-    const videoDir = path.join(__dirname, 'dl');
+    const videoDir = path.join(__dirname, 'src', 'dl');
     fs.readdir(videoDir, (err, files) => {
         if (err) {
             console.error(err);
