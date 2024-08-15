@@ -19,25 +19,26 @@ win+k → v
   - 音楽プレイヤー画面
   - 音楽dl画面
   - 
-## フォルダ構成
+## 現在のフォルダ構成
 - node_modules
-- assets
-  - icons
-  - imgs
-- dl (動画フォルダ)
-  - 各動画フォルダ (動画ID)
-    - info.json
-    - music.mp4
-    - thumbnail.png
-- pages
-  - home.html
-  - player.html
-  - download.html
+- src
+  - assets
+    - icons
+    - imgs
+  - dl (動画フォルダ)
+    - 各動画フォルダ (動画ID)
+      - info.json
+      - music.mp4
+      - thumbnail.png
+  - pages
+    - home.html
+    - player.html
+    - download.html
+- .gitignore
 - index.html (pagesへのルーティングファイル)
 - main.js (エントリーポイント)
-- package.json
 - package-lock.json
-- .gitignore 
+- package.json
 
 ## jsonファイル記述
 日付、フォルダー所属とフォルダー内のナンバー、タイトル、アーティスト、アルバム、トラック番号、ジャンル、年、コメント

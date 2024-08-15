@@ -1,4 +1,4 @@
-// main.js(EntryPoint このコメントアウトを消すな)
+// main.js(EntryPoint コメントアウトは消さず、増やしてもよい)
 const { app, BrowserWindow, WebContentsView, ipcMain, Menu } = require('electron');
 const fs = require('fs');
 const path = require('path');
@@ -25,7 +25,7 @@ function createWindow() {
         }
     });
 
-    mainWindow.loadFile('index.html'); // 初期表示はHome画面
+    mainWindow.loadFile('index.html'); // 初期表示はhome.html
 
     Menu.setApplicationMenu(null);
 
@@ -35,6 +35,11 @@ function createWindow() {
 }
 
 app.whenReady().then(createWindow);
+
+// ipcMainでログメッセージを受信してVSCodeのターミナルに出力
+ipcMain.on('log-message', (event, message) => {
+    console.log('Log from renderer:', message);
+});
 
 ipcMain.on('get-video-list', (event) => {
     const videoDir = path.join(__dirname, 'src', 'dl');

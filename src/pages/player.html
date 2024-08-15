@@ -1,4 +1,4 @@
-<!--player.html このコメントアウトを消すな-->
+<!--player.html コメントアウトは消さず、増やしてもよい-->
 <!DOCTYPE html>
 <html>
 <head>
@@ -14,7 +14,7 @@
             align-items: center;
             justify-content: flex-start;
             padding: 20px;
-            height: 100vh; /* 100% of the viewport height */
+            height: 100vh;
             box-sizing: border-box;
         }
 
@@ -151,7 +151,7 @@
 
             .player-video-list-container {
                 max-width: 45%;
-                height: 85vh; /* 高さを100%に */
+                height: 85vh;
             }
 
             .player-video-info {
@@ -181,10 +181,19 @@
         let currentVideoIndex = 0;
         let videoList = [];
 
+        // terminal上でのログ出力
+        ipcRenderer.send('log-message', 'load script in player.html'); 
+
+        // 古いリスナーの削除
+        ipcRenderer.removeAllListeners('video-list');
+
+        // 新しいリスナーの登録
         ipcRenderer.send('get-video-list');
         ipcRenderer.on('video-list', (event, list) => {
             videoList = list;
             const listElement = document.querySelector('.player-video-list');
+            listElement.innerHTML = ''; // 前のリストをクリア
+
             videoList.forEach((video, index) => {
                 const videoItem = document.createElement('li');
                 videoItem.className = 'player-video-item';
@@ -217,21 +226,22 @@
                     currentVideoIndex = index;
                     playVideo(video.videoPath, video);
                 });
-
                 listElement.appendChild(videoItem);
             });
-
             playVideo(videoList[currentVideoIndex].videoPath, videoList[currentVideoIndex]);
         });
 
+        // ビデオプレーヤー再生関数
         function playVideo(videoPath, video) {
             const videoPlayer = document.querySelector('.player-video-player');
-            console.log('Playing video:', videoPath); // Debugging output
             videoPlayer.src = videoPath;
             videoPlayer.play();
 
             const videoInfo = document.querySelector('.player-video-info');
             const screenWidth = window.innerWidth;
+
+            // terminal上でのログ出力
+            ipcRenderer.send('log-message', 'playing videoPath: ' + videoPath); 
 
             if (screenWidth > 800) {
                 document.querySelector('.player-video-title').textContent = `Title: ${video.title}`;
