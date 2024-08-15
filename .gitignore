@@ -2,6 +2,7 @@
 node_modules/
 dl/
 musicFolder/
+assets/
 
 # files
 tmp.html
